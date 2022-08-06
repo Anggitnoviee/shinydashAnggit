@@ -105,4 +105,52 @@ datawtrj
 #write.table(datawtrj, "datawtrj.csv", sep = ",")
 ```
 
+```{r}
+datawtrj_total <- datawtrj %>% 
+  group_by(Bulan) %>% 
+  summarise(total=n())  %>% 
+  ungroup()
+datawtrj_total$Bulan <- factor(datawtrj_total$Bulan, levels = c("April","May","June"))
+datawtrj_total %>% 
+  arrange(Bulan)
+
+hist_total<- plot_ly(datawtrj_total, 
+                          x = ~Bulan, 
+                          y = ~total, 
+                          type = 'bar', 
+                          name = 'Bulan',
+             marker = list(color = 'rgb(149,173,160)',
+                           line = list(color = 'rgb(74,86,80)',
+                                       width = 1.5)))
+hist_total  <- hist_total  %>% layout(title = "TOTAL KUNJUNGAN PER-BULAN",
+         xaxis = list(title = "BULAN"),
+         yaxis = list(title = "JUMLAH PASIEN"))
+hist_total
+
+```
+
+```{r}
+#JAM RESEP DOKTER
+resep_dokter <- datawtrj %>%
+  group_by(jam_resep_dokter, Hari, Tanggal) %>% 
+  summarise(jumlah = n()) %>% 
+  mutate(persen = jumlah*100/nrow(wtrj_clean),
+         Tanggal = as.factor(Tanggal),
+         jam_resep_dokter = as.factor(jam_resep_dokter)) %>% 
+  ungroup() %>% 
+    filter(!jam_resep_dokter %in% c('5','6','7','21','22','23'))
+resep_dokter$Hari <- factor(resep_dokter$Hari, levels = c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"))
+resep_dokter %>% 
+  arrange(Hari)
+```
+
+
+```{r}
+#JAM RESEP DOKTER
+plot_resep_dokter <- ggplot(resep_dokter, aes(x = jam_resep_dokter, y = jumlah, fill=jam_resep_dokter)) +
+  geom_boxplot() +
+  scale_y_continuous(labels = label_number())+
+  facet_wrap(~Hari, ncol=7)
+ggplotly(plot_resep_dokter)
+```
 
