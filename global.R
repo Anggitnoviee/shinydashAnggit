@@ -76,7 +76,6 @@ dokter_list <- wtrj_clean %>%
   distinct()
 
 #select Month
-month_list <- as.list(1:12) %>%
-  set_names(month.name)
-month_list$`All Year` <- 99
+month_list <- c("All", month.name )
+# month_list$`All Year` <- 99
 

@@ -21,12 +21,9 @@ ui<- shinyUI(
        choices = dokter_spesialist_list,
        selected = "DL",
        selectize = FALSE),
-    selectInput(
-      inputId = "dokter",
-      label = "Dokter:",
-      choices = dokter_list,
-      selected = "DL",
-      selectize = FALSE),
+    uiOutput(
+      outputId = "inputdokter"
+    ),
     
     # Side menu of the Dashboard
     sidebarMenu(
@@ -34,8 +31,6 @@ ui<- shinyUI(
         inputId = "month",
         label = "Month:",
         choices = month_list,
-        selected = 99,
-        size = 13,
         selectize = FALSE)
     )),
    # The body of the dashboard

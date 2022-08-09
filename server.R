@@ -4,7 +4,34 @@ library(shiny)
 server <- shinyServer(function(input, output, session) {
   tab_list <- NULL
   
+
+  
+  output$inputdokter <- renderUI({
+    
+    temp <- wtrj_clean %>% 
+      filter(Spesialis == input$spesialis) %>% 
+      pull(Nama.Dokter)
+    
+    
+    
+    selectInput(
+      inputId = "dokter",
+      label = "Dokter:",
+      choices = unique(temp),
+      selected = "DL",
+      selectize = FALSE)
+    
+  })
+  
   base_wtrj <- reactive({
+    if(input$month == "All"){
+      temp <- wtrj_clean %>%
+        filter(Spesialis == input$spesialis, Nama.Dokter == input$dokter)
+    } else {
+      
+      temp <- wtrj_clean %>%
+        filter(Spesialis == input$spesialis, Nama.Dokter == input$dokter, Bulan == input$month)
+    }
   })
   
   # Total Pasien (server) ------------------------------------------
@@ -12,7 +39,7 @@ server <- shinyServer(function(input, output, session) {
     # The following code runs inside the database.
     # pull() bring the results into R, which then
     # it's piped directly to a valueBox()
-    plot1 <- wtrj_clean %>% 
+    plot1 <- base_wtrj() %>% 
       tally() %>%
       pull() %>%
       as.integer() %>%
@@ -23,7 +50,7 @@ server <- shinyServer(function(input, output, session) {
   # Avg per Day (server) --------------------------------------------
   output$per_day <- renderValueBox({
     # The following code runs inside the database
-    plot_2 <- wtrj_clean %>% 
+    plot_2 <- base_wtrj() %>% 
       group_by(Hari, Bulan) %>%
       tally() %>%
       ungroup() %>%
@@ -37,7 +64,7 @@ server <- shinyServer(function(input, output, session) {
   # Sementara (server) --------------------------------------------
   output$tester <- renderValueBox({
     # The following code runs inside the database
-    plot_3 <- wtrj_clean %>% 
+    plot_3 <- base_wtrj() %>% 
       group_by(Hari, Bulan) %>%
       tally() %>%
       ungroup() %>%
