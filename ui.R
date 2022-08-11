@@ -20,7 +20,8 @@ ui<- shinyUI(
        label = "Dokter Spesialist:",
        choices = dokter_spesialist_list,
        selected = "DL",
-       selectize = FALSE),
+       multiple = TRUE,
+       selectize = TRUE),
     uiOutput(
       outputId = "inputdokter"
     ),
@@ -31,8 +32,21 @@ ui<- shinyUI(
         inputId = "month",
         label = "Month:",
         choices = month_list,
-        selectize = FALSE)
-    )),
+        selected = "DL",
+        multiple = TRUE,
+        size = 13,
+        selectize = FALSE),
+      
+    # side menu Hari
+      selectInput(
+        inputId = "hari",
+        label = "Hari:",
+        choices = unique(hari_list),
+        selected = "DL",
+        multiple = TRUE,
+        selectize = TRUE
+      ))
+    ),
    # The body of the dashboard
    dashboardBody(
      tabsetPanel(id = "tabs",
@@ -40,14 +54,15 @@ ui<- shinyUI(
                           value = "page1",
                           fluidRow(valueBoxOutput("total_pasien"),
                                    valueBoxOutput("per_day"),
-                                   valueBoxOutput("tester"))
-   
-   
-    )
-   )
-  )
- )
+                                   valueBoxOutput("tester")),
+                          fluidRow(column(width = 6,d3Output("group_totals")),
+                                   column(width = 6,d3Output("boxplot")))),
+                 tabPanel(title = "WTRJ2",
+                          value = "page2"))
 )
+)
+)
+
                  
 
 
