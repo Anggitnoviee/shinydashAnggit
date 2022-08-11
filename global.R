@@ -75,7 +75,12 @@ dokter_list <- wtrj_clean %>%
   select(Nama.Dokter) %>% 
   distinct()
 
+#select Hari
+hari_list <- wtrj_clean %>% 
+  select(Hari) %>% 
+  distinct()
+
 #select Month
 month_list <- c("All", month.name )
-# month_list$`All Year` <- 99
+month_list$`All Year` <- 99
 
